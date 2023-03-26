@@ -64,7 +64,7 @@ def app():
     VERI_CODE = os.getenv("VERI_CODE")
     verification_code = st.text_area("请在这里输入您的邀请验证码：", height=40)
         
-    while st.button("Verify"):
+    if st.button("Verify"):
         if verification_code == VERI_CODE:
             # File uploader
             uploaded_file = st.file_uploader("Upload a PDF or Word document", type=["pdf", "docx", "txt"])
