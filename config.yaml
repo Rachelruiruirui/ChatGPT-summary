@@ -1,0 +1,13 @@
+credentials:
+  usernames:
+    CICC-Software:
+      email: CICC-Software
+      name: CICC-Software
+      password: $2b$12$WC0Ctz595I5zGZ2ZnDWwou2wx89VRAgdSkksz98I0u.YLjKj.k/pa
+cookie:
+  expiry_days: 30
+  key: $2b$12$lJdPlKfWkO2HU2S0J4J5reE//.k4S6Qwre5hVpW5QR39C4ZI.QB9u
+  name: cicc-software-chatgpt-summary
+preauthorized:
+  emails:
+  - rachelruihan@outlook.com
