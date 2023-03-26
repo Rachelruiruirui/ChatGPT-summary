@@ -5,6 +5,9 @@ import docx2txt
 from io import BytesIO
 import os
 from dotenv import load_dotenv
+import streamlit_authenticator as stauth
+import yaml
+from yaml.loader import SafeLoader
 
 load_dotenv()
 
@@ -58,55 +61,86 @@ def summarize_text(text):
 
 # Streamlit app
 def app():
+    # VERI_CODE = os.getenv("VERI_CODE")
+    # verification_code = st.text_area("请在这里输入您的邀请验证码：", height=40)
+        
+    # if st.button("Verify"):
+    #     if verification_code == VERI_CODE:
+
+    with open('./config.yaml') as file:
+        config = yaml.load(file, Loader=SafeLoader)
+
+    authenticator = Authenticate(
+        config['credentials'],
+        config['cookie']['name'],
+        config['cookie']['key'],
+        config['cookie']['expiry_days'],
+        config['preauthorized']
+    )
+
+    authenticator = stauth.Authenticate(
+        config['credentials'],
+        config['cookie']['name'],
+        config['cookie']['key'],
+        config['cookie']['expiry_days'],
+        config['preauthorized']
+    )
+
+    name, authentication_status, username = authenticator.login('Login', 'main')
+
+    if authentication_status:
+        authenticator.logout('Logout', 'main')
+        
+
     st.title("中金计算机 - 纪要/文章速读整理器")
     st.write("仅供测试体验，谢绝商用。功能有费用，请手下留情。")
 
-    VERI_CODE = os.getenv("VERI_CODE")
-    verification_code = st.text_area("请在这里输入您的邀请验证码：", height=40)
-        
-    if st.button("Verify"):
-        if verification_code == VERI_CODE:
-            # File uploader
-            uploaded_file = st.file_uploader("Upload a PDF or Word document", type=["pdf", "docx", "txt"])
+    # File uploader
+    uploaded_file = st.file_uploader("Upload a PDF or Word document", type=["pdf", "docx", "txt"])
 
-            # Input form
-            if uploaded_file is not None:
-                file_type = uploaded_file.type
-                if file_type == "application/pdf":
-                    text = read_pdf(uploaded_file)
-                elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                    text = read_docx(uploaded_file)
-                elif file_type == "text/plain":
-                    text = read_text_file(uploaded_file)
-                else:
-                    st.error("Unsupported file type")
-                    return
-                st.text_area("Enter your text here", value=text, height=200)
-            else:
-                text = st.text_area("Enter your text here", height=200)
-
-            # Submit button
-            if st.button("Summarize"):
-                all_summary = ''
-                cnt = 1
-                while len(text):
-                    with st.spinner(f"Summarizing...part {cnt}"):
-                        print('cur text len is', len(text))
-
-                        max_len = min(2000, len(text))
-                        cur_text = text[:max_len]
-                        text = text[max_len:]
-
-                        summary = summarize_text(cur_text)
-                        all_summary += summary
-
-                        cnt += 1
-
-                # Display output
-                st.markdown(all_summary, unsafe_allow_html=True)
+    # Input form
+    if uploaded_file is not None:
+        file_type = uploaded_file.type
+        if file_type == "application/pdf":
+            text = read_pdf(uploaded_file)
+        elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            text = read_docx(uploaded_file)
+        elif file_type == "text/plain":
+            text = read_text_file(uploaded_file)
         else:
-            st.write("您的验证码不正确；请您刷新应用，并输入正确的验证码。")
+            st.error("Unsupported file type")
+            return
+        st.text_area("Enter your text here", value=text, height=200)
+    else:
+        text = st.text_area("Enter your text here", height=200)
 
+    # Submit button
+    if st.button("Summarize"):
+        all_summary = ''
+        cnt = 1
+        while len(text):
+            with st.spinner(f"Summarizing...part {cnt}"):
+                print('cur text len is', len(text))
+
+                max_len = min(2000, len(text))
+                cur_text = text[:max_len]
+                text = text[max_len:]
+
+                summary = summarize_text(cur_text)
+                all_summary += summary
+
+                cnt += 1
+
+        # Display output
+        st.markdown(all_summary, unsafe_allow_html=True)
+
+    elif authentication_status == False:
+        st.error('用户名或密码不正确')
+    elif authentication_status == None:
+        st.warning('请输入您的用户名和密码')
+
+    # else:
+    #     st.write("您的验证码不正确；请您刷新应用，并输入正确的验证码。")
 
 if __name__ == "__main__":
     app()
