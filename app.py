@@ -23,10 +23,11 @@ def read_text_file(file):
 
 def summarize_text(text):
     # System message containing instructions
-    system_string = "you are a helpful assistant. you help summarize text. The summarization must be in bullet point -- it cannot be one single plain paragraph! Don't put a title -- only the bullet points! The summarization shall be in Chinese; of length 1/4 of the original article. try to keep all the numbers; they are very important! do not simply shorten each sentence. try to understand the entire paragraph and provide a coherent summary."
+    system_string = "you are a helpful assistant. you help summarize text. The summarization must be categorize into sections according to their topics. The summarization must be in bullet point -- it cannot be one single plain paragraph! Don't put a title -- only the bullet points! The summarization shall be in Chinese; of length 1/4 of the original article. try to keep all the numbers; they are very important! do not simply shorten each sentence. try to understand the entire paragraph and provide a coherent summary."
 
     # User message with input text from the form
-    user_string = f"please help me summarize the below text. The summarization must be in bullet point -- it cannot be one single plain paragraph! Don't put a title -- only the bullet points! The summarization shall be in Chinese; of length 1/4 of the original article. try to keep all the numbers; they are very important! do not simply shorten each sentence. try to understand the entire paragraph and provide a coherent summary. {text}"
+    user_string = f"please help me summarize the below text. The summarization must be categorize into sections according to their topics. The summarization must be in bullet point -- it cannot be one single plain paragraph! Don't put a title -- only the bullet points! The summarization shall be in Chinese; of length 1/4 of the original article. try to keep all the numbers; they are very important! do not simply shorten each sentence. try to understand the entire paragraph and provide a coherent summary. \
+        {text}"
 
     # API request data
     data = {
@@ -58,47 +59,54 @@ def summarize_text(text):
 # Streamlit app
 def app():
     st.title("中金计算机 - 纪要/文章速读整理器")
-
     st.write("仅供测试体验，谢绝商用。功能有费用，请手下留情。")
 
-    # File uploader
-    uploaded_file = st.file_uploader("Upload a PDF or Word document", type=["pdf", "docx", "txt"])
+    VERI_CODE = os.getenv("VERI_CODE")
+    verification_code = st.text_area("请在这里输入您的邀请验证码：", height=40)
+        
+    while st.button("Verify"):
+        if verification_code == VERI_CODE:
+            # File uploader
+            uploaded_file = st.file_uploader("Upload a PDF or Word document", type=["pdf", "docx", "txt"])
 
-    # Input form
-    if uploaded_file is not None:
-        file_type = uploaded_file.type
-        if file_type == "application/pdf":
-            text = read_pdf(uploaded_file)
-        elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-            text = read_docx(uploaded_file)
-        elif file_type == "text/plain":
-            text = read_text_file(uploaded_file)
+            # Input form
+            if uploaded_file is not None:
+                file_type = uploaded_file.type
+                if file_type == "application/pdf":
+                    text = read_pdf(uploaded_file)
+                elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                    text = read_docx(uploaded_file)
+                elif file_type == "text/plain":
+                    text = read_text_file(uploaded_file)
+                else:
+                    st.error("Unsupported file type")
+                    return
+                st.text_area("Enter your text here", value=text, height=200)
+            else:
+                text = st.text_area("Enter your text here", height=200)
+
+            # Submit button
+            if st.button("Summarize"):
+                all_summary = ''
+                cnt = 1
+                while len(text):
+                    with st.spinner(f"Summarizing...part {cnt}"):
+                        print('cur text len is', len(text))
+
+                        max_len = min(2000, len(text))
+                        cur_text = text[:max_len]
+                        text = text[max_len:]
+
+                        summary = summarize_text(cur_text)
+                        all_summary += summary
+
+                        cnt += 1
+
+                # Display output
+                st.markdown(all_summary, unsafe_allow_html=True)
         else:
-            st.error("Unsupported file type")
-            return
-        st.text_area("Enter your text here", value=text, height=200)
-    else:
-        text = st.text_area("Enter your text here", height=200)
+            st.write("您的验证码不正确；请您刷新应用，并输入正确的验证码。")
 
-    # Submit button
-    if st.button("Summarize"):
-        all_summary = ''
-        cnt = 1
-        while len(text):
-            with st.spinner(f"Summarizing...part {cnt}"):
-                print('cur text len is', len(text))
-
-                max_len = min(2000, len(text))
-                cur_text = text[:max_len]
-                text = text[max_len:]
-
-                summary = summarize_text(cur_text)
-                all_summary += summary
-
-                cnt += 1
-
-        # Display output
-        st.markdown(all_summary, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     app()
