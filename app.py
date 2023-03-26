@@ -83,48 +83,47 @@ def app():
     if authentication_status:
         authenticator.logout('Logout', 'main')
         
+        st.title("中金计算机 - 纪要/文章速读整理器")
+        st.write("仅供测试体验，谢绝商用。功能有费用，请手下留情。")
 
-    st.title("中金计算机 - 纪要/文章速读整理器")
-    st.write("仅供测试体验，谢绝商用。功能有费用，请手下留情。")
+        # File uploader
+        uploaded_file = st.file_uploader("Upload a PDF or Word document", type=["pdf", "docx", "txt"])
 
-    # File uploader
-    uploaded_file = st.file_uploader("Upload a PDF or Word document", type=["pdf", "docx", "txt"])
-
-    # Input form
-    if uploaded_file is not None:
-        file_type = uploaded_file.type
-        if file_type == "application/pdf":
-            text = read_pdf(uploaded_file)
-        elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-            text = read_docx(uploaded_file)
-        elif file_type == "text/plain":
-            text = read_text_file(uploaded_file)
+        # Input form
+        if uploaded_file is not None:
+            file_type = uploaded_file.type
+            if file_type == "application/pdf":
+                text = read_pdf(uploaded_file)
+            elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                text = read_docx(uploaded_file)
+            elif file_type == "text/plain":
+                text = read_text_file(uploaded_file)
+            else:
+                st.error("Unsupported file type")
+                return
+            st.text_area("Enter your text here", value=text, height=200)
         else:
-            st.error("Unsupported file type")
-            return
-        st.text_area("Enter your text here", value=text, height=200)
-    else:
-        text = st.text_area("Enter your text here", height=200)
+            text = st.text_area("Enter your text here", height=200)
 
-    # Submit button
-    if st.button("Summarize"):
-        all_summary = ''
-        cnt = 1
-        while len(text):
-            with st.spinner(f"Summarizing...part {cnt}"):
-                print('cur text len is', len(text))
+        # Submit button
+        if st.button("Summarize"):
+            all_summary = ''
+            cnt = 1
+            while len(text):
+                with st.spinner(f"Summarizing...part {cnt}"):
+                    print('cur text len is', len(text))
 
-                max_len = min(2000, len(text))
-                cur_text = text[:max_len]
-                text = text[max_len:]
+                    max_len = min(2000, len(text))
+                    cur_text = text[:max_len]
+                    text = text[max_len:]
 
-                summary = summarize_text(cur_text)
-                all_summary += summary
+                    summary = summarize_text(cur_text)
+                    all_summary += summary
 
-                cnt += 1
+                    cnt += 1
 
-        # Display output
-        st.markdown(all_summary, unsafe_allow_html=True)
+            # Display output
+            st.markdown(all_summary, unsafe_allow_html=True)
 
     elif authentication_status == False:
         st.error('用户名或密码不正确')
