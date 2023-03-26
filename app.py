@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def read_pdf(file):
-    pdf_reader = PyPDF2.PdfFileReader(file)
+    pdf_reader = PyPDF2.PdfReader(file)
     text = ""
     for page in range(pdf_reader.getNumPages()):
         text += pdf_reader.getPage(page).extractText()
