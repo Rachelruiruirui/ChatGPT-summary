@@ -128,7 +128,7 @@ def app():
     elif authentication_status == False:
         st.error('用户名或密码不正确')
     elif authentication_status == None:
-        st.warning('请输入您的用户名和密码')
+        st.warning('请输入您的用户名和密码（同为您收到的邀请码）')
 
     # else:
     #     st.write("您的验证码不正确；请您刷新应用，并输入正确的验证码。")
