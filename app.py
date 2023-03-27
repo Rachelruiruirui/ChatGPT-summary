@@ -61,8 +61,8 @@ def summarize_text(text):
 
 # Streamlit app
 def app():
-    user_name = os.getenv("USER_NAME")
-    password = os.getenv("PASSWORD")
+    USER_NAME = os.getenv("USER_NAME")
+    PASSWORD = os.getenv("PASSWORD")
     # verification_code = st.text_area("请在这里输入您的邀请验证码：", height=40)
         
     # if st.button("Verify"):
