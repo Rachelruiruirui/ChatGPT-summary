@@ -5,9 +5,9 @@ credentials:
       name: CICC-Software
       password: $2b$12$WC0Ctz595I5zGZ2ZnDWwou2wx89VRAgdSkksz98I0u.YLjKj.k/pa
 cookie:
-  expiry_days: 30
-  key: $2b$12$lJdPlKfWkO2HU2S0J4J5reE//.k4S6Qwre5hVpW5QR39C4ZI.QB9u
-  name: cicc-software-chatgpt-summary
+  expiry_days: 1
+  key: $2b$12$EdQwT9uexP3qACIvKeTuqeJvRyMkrRXyujoF59Tec3zpdfL/za1ge
+  name: cicc-hanrui-chatgpt-summary
 preauthorized:
   emails:
   - rachelruihan@outlook.com
