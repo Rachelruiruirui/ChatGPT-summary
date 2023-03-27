@@ -84,7 +84,7 @@ def app():
         authenticator.logout('Logout', 'main')
         
         st.title("中金计算机 - 纪要/文章速读整理器")
-        st.write("仅供测试体验，谢绝商用。功能有费用，请手下留情。")
+        st.write("1. 仅供测试体验，谢绝商用。我们团队个人付费，资源可能随时被耗尽。    \n 2. 此功能意在为大家提供一个便利的小工具，可能有bug，还请多多谅解。:blush:")
 
         # File uploader
         uploaded_file = st.file_uploader("Upload a PDF or Word document", type=["pdf", "docx", "txt"])
