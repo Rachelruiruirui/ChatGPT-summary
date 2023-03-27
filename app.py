@@ -63,10 +63,6 @@ def summarize_text(text):
 def app():
     USER_NAME = os.getenv("USER_NAME")
     PASSWORD = os.getenv("PASSWORD")
-    # verification_code = st.text_area("请在这里输入您的邀请验证码：", height=40)
-        
-    # if st.button("Verify"):
-    #     if verification_code == VERI_CODE:
 
     with open('./config.yaml') as file:
         config = yaml.load(file, Loader=SafeLoader)
@@ -133,10 +129,7 @@ def app():
     elif authentication_status == False:
         st.error('用户名或密码不正确')
     elif authentication_status == None:
-        st.warning('请输入您的用户名和密码（同为您收到的邀请码）')
-
-    # else:
-    #     st.write("您的验证码不正确；请您刷新应用，并输入正确的验证码。")
+        st.warning('由于资源耗尽，本服务暂时停用。感谢大家支持！:heartbeat:')
 
 if __name__ == "__main__":
     app()
