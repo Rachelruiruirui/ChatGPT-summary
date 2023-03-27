@@ -71,9 +71,9 @@ def app():
     with open('./config.yaml') as file:
         config = yaml.load(file, Loader=SafeLoader)
     
-    config['credentials']['usernames']['CICC-Software']['name'] = user_name
-    config['credentials']['usernames']['CICC-Software']['email'] = user_name
-    config['credentials']['usernames']['CICC-Software']['password'] = password
+    config['credentials']['usernames']['CICC-Software']['name'] = USER_NAME
+    config['credentials']['usernames']['CICC-Software']['email'] = USER_NAME
+    config['credentials']['usernames']['CICC-Software']['password'] = PASSWORD
 
     authenticator = stauth.Authenticate(
         config['credentials'],
