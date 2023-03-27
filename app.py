@@ -61,7 +61,8 @@ def summarize_text(text):
 
 # Streamlit app
 def app():
-    # VERI_CODE = os.getenv("VERI_CODE")
+    user_name = os.getenv("USER_NAME")
+    password = os.getenv("PASSWORD")
     # verification_code = st.text_area("请在这里输入您的邀请验证码：", height=40)
         
     # if st.button("Verify"):
@@ -69,6 +70,9 @@ def app():
 
     with open('./config.yaml') as file:
         config = yaml.load(file, Loader=SafeLoader)
+    
+    config['credentials']['usernames']['CICC-Software']['name'] = user_name
+    config['credentials']['usernames']['CICC-Software']['password'] = password
 
     authenticator = stauth.Authenticate(
         config['credentials'],
