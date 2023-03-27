@@ -72,7 +72,7 @@ def app():
         config = yaml.load(file, Loader=SafeLoader)
     
     config['credentials']['usernames']['CICC-Software']['name'] = user_name
-    config['credentials']['usernames']['CICC-Software']['name'] = email
+    config['credentials']['usernames']['CICC-Software']['email'] = user_name
     config['credentials']['usernames']['CICC-Software']['password'] = password
 
     authenticator = stauth.Authenticate(
